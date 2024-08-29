@@ -1,0 +1,83 @@
+@import "@angular/material/theming";
+
+$primary-color: mat-color($primary);
+
+
+.countdown-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  height: 100vh;
+  padding: 20px;
+  background-color: #fff;
+}
+
+.title {
+  font-size: 6vw;
+  font-weight: bold;
+  color: $midsummer-theme;
+  margin-bottom: 20px;
+}
+
+.time {
+  font-size: 5vw;
+  margin-bottom: 40px;
+}
+
+.inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  width: 100%;
+  max-width: 400px;
+}
+
+@media (orientation: landscape) {
+  .countdown-container {
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+  }
+
+  .title {
+    font-size: 4vw;
+  }
+
+  .time {
+    font-size: 3.5vw;
+  }
+
+  .inputs {
+    flex-direction: row;
+    justify-content: center;
+    gap: 30px;
+    max-width: none;
+  }
+}
+
+.mat-form-field {
+  width: 100%;
+}
+
+.mat-form-field-appearance-outline .mat-form-field-outline {
+  color: #ccc;
+}
+
+.mat-form-field-appearance-outline .mat-form-field-outline-thick {
+  color: #800080; 
+}
+
+.mat-form-field-label {
+  color: #800080;
+}
+
+.mat-input-element {
+  font-size: 1.2vw;
+}
+
+.mat-form-field-appearance-outline .mat-form-field-outline-end, 
+.mat-form-field-appearance-outline .mat-form-field-outline-start {
+  border-width: 1px;
+}
