@@ -1,25 +1,26 @@
 <div class="container">
-  <div class="title">Time to {{ titleFormControl.value }}</div>
-  <div class="time">{{ timeRemaining }}</div>
-  <div class="input-group">
-    <mat-form-field appearance="outline">
-      <mat-label>Title</mat-label>
-      <input
-        matInput
-        placeholder="Title"
-        [formControl]="titleFormControl"
-      />
-    </mat-form-field>
-
-    <mat-form-field appearance="outline">
-      <mat-label>Date</mat-label>
-      <input
-        matInput
-        [matDatepicker]="datepicker"
-        [formControl]="dateFormControl"
-        (click)="openDatepicker()"
-      />
-      <mat-datepicker #datepicker></mat-datepicker>
-    </mat-form-field>
+  <div *ngIf="loading; else content">
+    <mat-spinner></mat-spinner>
   </div>
+  <ng-template #content>
+    <div class="title">Time to {{ titleFormControl.value }}</div>
+    <div class="time">{{ timeRemaining }}</div>
+    <div class="input-group">
+      <mat-form-field appearance="outline">
+        <mat-label>Title</mat-label>
+        <input matInput placeholder="Title" [formControl]="titleFormControl" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Date</mat-label>
+        <input
+          matInput
+          [matDatepicker]="datepicker"
+          [formControl]="dateFormControl"
+          (click)="openDatepicker()"
+        />
+        <mat-datepicker #datepicker></mat-datepicker>
+      </mat-form-field>
+    </div>
+  </ng-template>
 </div>

@@ -9,10 +9,12 @@ import {
   MatDatepicker,
   MatDatepickerModule,
 } from '@angular/material/datepicker';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import { Subject } from 'rxjs/internal/Subject';
 import { takeUntil } from 'rxjs/internal/operators/takeUntil';
 import { debounceTime } from 'rxjs/internal/operators/debounceTime';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-countdown',
@@ -21,7 +23,9 @@ import { debounceTime } from 'rxjs/internal/operators/debounceTime';
     MatFormFieldModule,
     MatInputModule,
     MatDatepickerModule,
+    MatProgressSpinnerModule,
     ReactiveFormsModule,
+    CommonModule,
   ],
   templateUrl: './countdown.component.html',
   styleUrls: ['./countdown.component.scss'],
@@ -37,14 +41,18 @@ export class CountdownComponent implements OnInit, OnDestroy {
   targetDate: Date = new Date(this.MIDSUMMER_ENV_DATE);
   timeRemaining = '';
 
+  loading = false;
+  errorMessage: string | null = null;
+
   titleFormControl = new FormControl<string>('Midsummer Eve');
   dateFormControl = new FormControl<Date>(this.targetDate);
 
   @ViewChild('datepicker') datepicker!: MatDatepicker<Date>;
 
   ngOnInit() {
+    this.loading = true;
     this.initializeForm();
-    this.subscribeToFormChange()
+    this.subscribeToFormChange();
     this.startCountDownTimer();
   }
 
@@ -54,24 +62,33 @@ export class CountdownComponent implements OnInit, OnDestroy {
   }
 
   private initializeForm() {
-    const eventTitle = this.getLocalStorageItem('eventTitle');
-    const eventDate = this.getLocalStorageItem('eventDate');
+    try {
+      const eventTitle = this.getLocalStorageItem('eventTitle');
+      const eventDate = this.getLocalStorageItem('eventDate');
 
-    if (eventTitle && eventDate) {
-      this.titleFormControl
-      this.updateCountdown(new Date(eventDate));
+      if (eventTitle && eventDate) {
+        this.titleFormControl.setValue(eventTitle);
+        this.dateFormControl.setValue(new Date(eventDate));
+
+        this.updateCountdown(this.dateFormControl.value);
+      }
+    } finally {
+      this.loading = false;
     }
   }
 
-private subscribeToFormChange(){
-  this.handleTitleChange()
-  this.handleDateChange()
-}
+  private subscribeToFormChange() {
+    this.handleTitleChange();
+    this.handleDateChange();
+  }
 
   private startCountDownTimer() {
     setInterval(() => {
       const date = this.dateFormControl.value;
-      if (date) this.timeRemaining = this.updateCountdown(date);
+
+      if (date) {
+        this.timeRemaining = this.updateCountdown(date);
+      }
     }, this.UPDATE_INTERVAL);
   }
 
@@ -86,19 +103,26 @@ private subscribeToFormChange(){
   handleTitleChange() {
     this.titleFormControl.valueChanges
       .pipe(debounceTime(this.UPDATE_LOCALSTORAGE), takeUntil(this.destroy$))
-      .subscribe((value) => {
-        if (value) this.setLocalStorageItem('eventTitle', value);
+      .subscribe({
+        next: (value) => {
+          if (value) this.setLocalStorageItem('eventTitle', value);
+        },
+        error: () => (this.errorMessage = 'Failed to update Title'),
       });
   }
 
   handleDateChange() {
     this.dateFormControl.valueChanges
       .pipe(debounceTime(this.UPDATE_LOCALSTORAGE), takeUntil(this.destroy$))
-      .subscribe((value) => {
-        if (value) {
-          this.setLocalStorageItem('eventDate', value.toISOString());
-          this.updateCountdown(value);
-        }
+      .subscribe({
+        next: (value) => {
+          if (value) {
+            this.setLocalStorageItem('eventDate', value.toISOString());
+
+            this.updateCountdown(value);
+          }
+        },
+        error: () => (this.errorMessage = 'Failed to update Date'),
       });
   }
 
@@ -108,7 +132,6 @@ private subscribeToFormChange(){
 
   updateCountdown(targetDate: Date | null): string {
     if (!targetDate) return '';
-
     const now = new Date().getTime();
     const distance = targetDate.getTime() - now;
 
