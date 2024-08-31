@@ -19,6 +19,11 @@ $default-padding: 1rem;
 .container {
   max-width: $container-max-width;
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  height: 100vh;
+
   .title {
     color: $primary-color;
     font-size: 1.4rem;
@@ -55,9 +60,9 @@ $default-padding: 1rem;
 @media (min-width: 600px) {
   .container {
     max-width: none;
-    display: flex;
-    flex-direction: column;
     align-items: center;
+    justify-content: center;
+    
     .input-group {
       flex-direction: row;
       gap: 1rem;
