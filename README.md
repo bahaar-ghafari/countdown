@@ -20,7 +20,6 @@ Countdown is a responsive and interactive Angular application that allows users 
 + **Persistent Storage:** Saves event title and date using local storage.
 + **User-Friendly Forms:** Intuitive form controls with validation.
 + **Loading Indicators:** Provides visual feedback during data processing.
-+ **Error Handling:** Gracefully handles errors with user notifications.
 + **Accessible Design:** Implements ARIA attributes for better accessibility.
 
 ## Demo
