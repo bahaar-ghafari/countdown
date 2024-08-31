@@ -1,5 +1,7 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
+
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { provideNativeDateAdapter } from '@angular/material/core';
@@ -7,9 +9,10 @@ import {
   MatDatepicker,
   MatDatepickerModule,
 } from '@angular/material/datepicker';
+
 import { Subject } from 'rxjs/internal/Subject';
 import { takeUntil } from 'rxjs/internal/operators/takeUntil';
-import { debounceTime } from 'rxjs';
+import { debounceTime } from 'rxjs/internal/operators/debounceTime';
 
 @Component({
   selector: 'app-countdown',
@@ -25,8 +28,10 @@ import { debounceTime } from 'rxjs';
   providers: [provideNativeDateAdapter()],
 })
 export class CountdownComponent implements OnInit, OnDestroy {
-  readonly MIDSUMMER_ENV_DATE = '2025-06-21'
-  private UPDATE_LOCALSTORAGE = 1000
+  private readonly MIDSUMMER_ENV_DATE = '2025-06-21';
+  private readonly UPDATE_LOCALSTORAGE = 1000;
+  private readonly UPDATE_INTERVAL = 1000;
+
   private destroy$ = new Subject<void>();
 
   targetDate: Date = new Date(this.MIDSUMMER_ENV_DATE);
@@ -38,26 +43,36 @@ export class CountdownComponent implements OnInit, OnDestroy {
   @ViewChild('datepicker') datepicker!: MatDatepicker<Date>;
 
   ngOnInit() {
-    const eventTitle = this.getLocalStorageItem('eventTitle');
-    const eventDate = this.getLocalStorageItem('eventDate');
-
-    if (eventTitle && eventDate) {
-      this.titleFormControl.setValue(eventTitle);
-      this.dateFormControl.setValue(new Date(eventDate));
-
-      this.updateCountdown(this.dateFormControl.value);
-    }
-
-    this.handleDateChange();
-    this.handleTitleChange()
-    setInterval(() => {
-      this.timeRemaining = this.updateCountdown(this.dateFormControl.value);
-    }, 1000);
+    this.initializeForm();
+    this.subscribeToFormChange()
+    this.startCountDownTimer();
   }
 
   ngOnDestroy() {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  private initializeForm() {
+    const eventTitle = this.getLocalStorageItem('eventTitle');
+    const eventDate = this.getLocalStorageItem('eventDate');
+
+    if (eventTitle && eventDate) {
+      this.titleFormControl
+      this.updateCountdown(new Date(eventDate));
+    }
+  }
+
+private subscribeToFormChange(){
+  this.handleTitleChange()
+  this.handleDateChange()
+}
+
+  private startCountDownTimer() {
+    setInterval(() => {
+      const date = this.dateFormControl.value;
+      if (date) this.timeRemaining = this.updateCountdown(date);
+    }, this.UPDATE_INTERVAL);
   }
 
   setLocalStorageItem(key: localStorageKey, title: string) {
@@ -70,7 +85,7 @@ export class CountdownComponent implements OnInit, OnDestroy {
 
   handleTitleChange() {
     this.titleFormControl.valueChanges
-      .pipe(debounceTime(this.UPDATE_LOCALSTORAGE),takeUntil(this.destroy$))
+      .pipe(debounceTime(this.UPDATE_LOCALSTORAGE), takeUntil(this.destroy$))
       .subscribe((value) => {
         if (value) this.setLocalStorageItem('eventTitle', value);
       });
@@ -78,7 +93,7 @@ export class CountdownComponent implements OnInit, OnDestroy {
 
   handleDateChange() {
     this.dateFormControl.valueChanges
-      .pipe(debounceTime(this.UPDATE_LOCALSTORAGE),takeUntil(this.destroy$))
+      .pipe(debounceTime(this.UPDATE_LOCALSTORAGE), takeUntil(this.destroy$))
       .subscribe((value) => {
         if (value) {
           this.setLocalStorageItem('eventDate', value.toISOString());
