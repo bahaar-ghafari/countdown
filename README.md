@@ -24,8 +24,7 @@ Countdown is a responsive and interactive Angular application that allows users 
 + **Accessible Design:** Implements ARIA attributes for better accessibility.
 
 ## Demo
-
-
+You can see live demo of project in http://188.245.69.243:4200/
 
 ## Installation
 
@@ -64,10 +63,10 @@ npm install -g @angular/cli@17
 
 ```
 
-Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+Navigate to `http://localhost:4200/`.
 
 ## Usage
-### Setting Up an Event
+Setting Up an Event
 
 **1. Enter Event Title:** Type in the title of your event in the provided input field.
 
@@ -90,9 +89,7 @@ To optimize the performance of local storage updates, the application uses the d
 
 ## Testing
 
-### Running Unit Tests
-
-The application includes a set of unit tests that can be executed with the following command:
+**Running Unit Tests:** The application includes a set of unit tests that can be executed with the following command:
 
 ```bash
     ng test
