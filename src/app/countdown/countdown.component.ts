@@ -54,6 +54,7 @@ export class CountdownComponent implements OnInit, OnDestroy {
     this.initializeForm();
     this.subscribeToFormChange();
     this.startCountDownTimer();
+    this.loading = false;
   }
 
   ngOnDestroy() {
@@ -62,18 +63,14 @@ export class CountdownComponent implements OnInit, OnDestroy {
   }
 
   private initializeForm() {
-    try {
-      const eventTitle = this.getLocalStorageItem('eventTitle');
-      const eventDate = this.getLocalStorageItem('eventDate');
+    const eventTitle = this.getLocalStorageItem('eventTitle');
+    const eventDate = this.getLocalStorageItem('eventDate');
 
-      if (eventTitle && eventDate) {
-        this.titleFormControl.setValue(eventTitle);
-        this.dateFormControl.setValue(new Date(eventDate));
+    if (eventTitle && eventDate) {
+      this.titleFormControl.setValue(eventTitle);
+      this.dateFormControl.setValue(new Date(eventDate));
 
-        this.updateCountdown(this.dateFormControl.value);
-      }
-    } finally {
-      this.loading = false;
+      this.updateCountdown(this.dateFormControl.value);
     }
   }
 
