@@ -9,6 +9,20 @@
 // Be sure that you only ever include this mixin once!
 @include mat.core();
 
+
+@font-face {
+  font-family: 'Open Sauce One';
+  src: url('assets/fonts/OpenSauceOne-Regular.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Open Sauce One';
+  src: url('assets/fonts/OpenSauceSans-Bold.woff') format('woff');
+  font-weight: 700;
+  font-style: normal;
+}
+
 // Define the theme object.
 $countdown-theme: mat.define-theme((
   color: (
@@ -37,4 +51,4 @@ $countdown-theme: mat.define-theme((
 /* You can add global styles to this file, and also import other style files */
 
 html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+body { margin: 0; font-family: 'Open Sauce One', sans-serif }

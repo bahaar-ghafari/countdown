@@ -1,83 +1,67 @@
-@import "@angular/material/theming";
+@use '@angular/material' as mat;
 
-$primary-color: mat-color($primary);
-
-
-.countdown-container {
+:host {
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
-  text-align: center;
+  justify-content: center;
   height: 100vh;
+  width: 100vw;
+  text-align: center;
   padding: 20px;
-  background-color: #fff;
+  box-sizing: border-box;
 }
 
-.title {
-  font-size: 6vw;
-  font-weight: bold;
-  color: $midsummer-theme;
-  margin-bottom: 20px;
-}
-
-.time {
-  font-size: 5vw;
-  margin-bottom: 40px;
-}
-
-.inputs {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
+.container {
+  max-width: 500px;
   width: 100%;
-  max-width: 400px;
-}
-
-@media (orientation: landscape) {
-  .countdown-container {
-    flex-direction: column;
-    justify-content: space-around;
-    align-items: center;
-  }
-
   .title {
-    font-size: 4vw;
+    color: #8a0e83;
+    font-size: 2rem;
+    font-weight: bold;
   }
 
   .time {
-    font-size: 3.5vw;
+    font-size: 1.5rem;
+    margin: 20px 0;
   }
 
-  .inputs {
-    flex-direction: row;
-    justify-content: center;
-    gap: 30px;
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin-top: 20px;
+    font-size: 1rem;
+
+    label {
+      font-weight: bold;
+    }
+
+    input {
+      width: 150px;
+      padding: 5px;
+      font-size: 1rem;
+    }
+  }
+}
+
+@media (min-width: 600px) {
+  .container {
     max-width: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    .input-group {
+      display: flex;
+      flex-direction: row;
+      gap: 1rem;
+      .title {
+        font-size: 3rem;
+      }
+
+      .time {
+        font-size: 2rem;
+      }
+    }
   }
-}
-
-.mat-form-field {
-  width: 100%;
-}
-
-.mat-form-field-appearance-outline .mat-form-field-outline {
-  color: #ccc;
-}
-
-.mat-form-field-appearance-outline .mat-form-field-outline-thick {
-  color: #800080; 
-}
-
-.mat-form-field-label {
-  color: #800080;
-}
-
-.mat-input-element {
-  font-size: 1.2vw;
-}
-
-.mat-form-field-appearance-outline .mat-form-field-outline-end, 
-.mat-form-field-appearance-outline .mat-form-field-outline-start {
-  border-width: 1px;
 }

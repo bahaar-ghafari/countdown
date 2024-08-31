@@ -1,17 +1,21 @@
-<div class="countdown-container">
-    <h1 class="title">Time to {{ eventTitle }}</h1>
-    <div class="time">{{ timeRemaining }}</div>
-    
-    <div class="inputs">
-      <mat-form-field appearance="outline">
-        <mat-label>Title</mat-label>
-        <input matInput [(ngModel)]="eventTitle" />
-      </mat-form-field>
-      
-      <mat-form-field appearance="outline">
-        <mat-label>Date</mat-label>
-        <input matInput [(ngModel)]="targetDate" type="date"/>
-      </mat-form-field>
-    </div>
+<div class="container">
+  <div class="title">Time to {{ titleFormControl.value }}</div>
+  <div class="time">{{ timeRemaining }}</div>
+  <div class="input-group">
+    <mat-form-field appearance="outline">
+      <mat-label>Title</mat-label>
+      <input matInput placeholder="Title" [formControl]="titleFormControl" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Date</mat-label>
+      <input
+        matInput
+        [matDatepicker]="datepicker"
+        [formControl]="dateFormControl"
+        (click)="openDatepicker()"
+      />
+      <mat-datepicker #datepicker></mat-datepicker>
+    </mat-form-field>
   </div>
-  
+</div>
