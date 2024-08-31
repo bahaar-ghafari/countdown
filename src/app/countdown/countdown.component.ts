@@ -104,7 +104,9 @@ export class CountdownComponent implements OnInit, OnDestroy {
         next: (value) => {
           if (value) this.setLocalStorageItem('eventTitle', value);
         },
-        error: () => (this.errorMessage = 'Failed to update Title'),
+        error: () => {
+          this.errorMessage = 'Failed to update Title';
+        },
       });
   }
 
@@ -119,7 +121,9 @@ export class CountdownComponent implements OnInit, OnDestroy {
             this.updateCountdown(value);
           }
         },
-        error: () => (this.errorMessage = 'Failed to update Date'),
+        error: () => {
+          this.errorMessage = 'Failed to update Date';
+        },
       });
   }
 
