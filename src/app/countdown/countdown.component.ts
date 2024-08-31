@@ -11,10 +11,13 @@ import {
 } from '@angular/material/datepicker'
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner'
 
+import { CommonModule } from '@angular/common'
+
 import { Subject } from 'rxjs/internal/Subject'
 import { takeUntil } from 'rxjs/internal/operators/takeUntil'
 import { debounceTime } from 'rxjs/internal/operators/debounceTime'
-import { CommonModule } from '@angular/common'
+
+import { LocalStorageKey } from './countdown.type'
 
 @Component({
   selector: 'app-countdown',
@@ -88,11 +91,11 @@ export class CountdownComponent implements OnInit, OnDestroy {
     }, this.UPDATE_INTERVAL)
   }
 
-  setLocalStorageItem(key: localStorageKey, title: string) {
+  setLocalStorageItem(key: LocalStorageKey, title: string) {
     localStorage.setItem(key, title)
   }
 
-  getLocalStorageItem(key: localStorageKey) {
+  getLocalStorageItem(key: LocalStorageKey) {
     return localStorage.getItem(key)
   }
 
@@ -139,5 +142,3 @@ export class CountdownComponent implements OnInit, OnDestroy {
     return `${days} days, ${hours} h, ${minutes} m, ${seconds} s`
   }
 }
-
-type localStorageKey = 'eventTitle' | 'eventDate'
