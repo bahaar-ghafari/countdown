@@ -1,7 +1,4 @@
 $primary-color: #72035d;
-$text-color:#757575;
-$container-max-width: 31.2rem;
-$input-max-with: 9rem;
 $default-padding: 1rem;
 
 :host {
@@ -17,23 +14,20 @@ $default-padding: 1rem;
 }
 
 .container {
-  max-width: $container-max-width;
   width: 100%;
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
   height: 100vh;
+  overflow: hidden;
+  white-space: nowrap;
+
+  // Solution one
+  font-size: calc(7px + 2vw);
 
   .title {
     color: $primary-color;
-    font-size: 1.4rem;
     font-weight: 800;
-  }
-
-  .time {
-    font-size: 1.6rem;
-    margin: 1rem 0;
-    color: #000;
   }
 
   .input-group {
@@ -41,38 +35,21 @@ $default-padding: 1rem;
     flex-direction: column;
     justify-content: space-between;
     margin-top: 1rem;
-    font-size: 1rem;
-    color: #000;
-
-    label {
-      font-weight: bold;
-      color: #000;
-    }
-
-    input {
-      max-width: $input-max-with;
-      padding: 5px;
-      border-color: $text-color;
-    }
   }
 }
 
 @media (min-width: 600px) {
   .container {
-    max-width: none;
     align-items: center;
     justify-content: center;
-    
+
+      // Solution one
+    font-size: calc(9px + 3vw);
+
     .input-group {
       flex-direction: row;
       gap: 1rem;
-    }
-    .title {
-      font-size: 3.8rem;
-    }
-
-    .time {
-      font-size: 4.2rem;
+      margin-top: 5rem;
     }
   }
 }
