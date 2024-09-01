@@ -1,9 +1,9 @@
-<div *ngIf="loading; else content">
-  <mat-spinner aria-label="Loading..."></mat-spinner>
-</div>
-<ng-template #content>
-  <div class="container">
-    <div>
+<div class="container">
+  <!-- <div *ngIf="loading; else content" class="loading">
+    <mat-spinner aria-label="Loading..."></mat-spinner>
+  </div> -->
+  <!-- <ng-template #content> -->
+    <div #eventBox>
       <h1 class="title" aria-label="Event Title">
         Time to {{ titleFormControl.value }}
       </h1>
@@ -35,5 +35,5 @@
         <mat-datepicker #datepicker></mat-datepicker>
       </mat-form-field>
     </div>
-  </div>
-</ng-template>
+  <!-- </ng-template> -->
+</div>

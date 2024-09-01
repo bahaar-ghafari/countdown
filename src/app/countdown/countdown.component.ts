@@ -1,27 +1,31 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core'
-
+import {
+  Component,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+  ElementRef,
+  HostListener,
+  AfterViewInit,
+} from '@angular/core'
 import { FormControl, ReactiveFormsModule } from '@angular/forms'
-
-import { MatInputModule } from '@angular/material/input'
-import { MatFormFieldModule } from '@angular/material/form-field'
-import { provideNativeDateAdapter } from '@angular/material/core'
 import {
   MatDatepicker,
   MatDatepickerModule,
 } from '@angular/material/datepicker'
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner'
-
+import { Subject } from 'rxjs'
+import { debounceTime, takeUntil } from 'rxjs/operators'
+import { TextFittingAlgorithmService } from './text-fitting-algorithm.service'
 import { CommonModule } from '@angular/common'
-
-import { Subject } from 'rxjs/internal/Subject'
-import { takeUntil } from 'rxjs/internal/operators/takeUntil'
-import { debounceTime } from 'rxjs/internal/operators/debounceTime'
-
-import { LocalStorageKey } from './countdown.type'
+import { MatFormFieldModule } from '@angular/material/form-field'
+import { MatInputModule } from '@angular/material/input'
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner'
+import { provideNativeDateAdapter } from '@angular/material/core'
 
 @Component({
   selector: 'app-countdown',
   standalone: true,
+  templateUrl: './countdown.component.html',
+  styleUrls: ['./countdown.component.scss'],
   imports: [
     MatFormFieldModule,
     MatInputModule,
@@ -30,11 +34,9 @@ import { LocalStorageKey } from './countdown.type'
     ReactiveFormsModule,
     CommonModule,
   ],
-  templateUrl: './countdown.component.html',
-  styleUrls: ['./countdown.component.scss'],
   providers: [provideNativeDateAdapter()],
 })
-export class CountdownComponent implements OnInit, OnDestroy {
+export class CountdownComponent implements OnInit, OnDestroy, AfterViewInit {
   private readonly MIDSUMMER_ENV_DATE = '2025-06-21'
   private readonly UPDATE_LOCALSTORAGE = 1000
   private readonly UPDATE_INTERVAL = 1000
@@ -50,12 +52,26 @@ export class CountdownComponent implements OnInit, OnDestroy {
   dateFormControl = new FormControl<Date>(this.targetDate)
 
   @ViewChild('datepicker') datepicker!: MatDatepicker<Date>
+  @ViewChild('eventBox', { static: true }) eventBox!: ElementRef
+
+  constructor(
+    private TextFittingAlgorithmService: TextFittingAlgorithmService,
+  ) {}
 
   ngOnInit() {
     this.loading = true
     this.initializeForm()
     this.subscribeToFormChange()
     this.startCountDownTimer()
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onResize() {
+    this.adjustTitleFontSize()
+  }
+
+  ngAfterViewInit() {
+    this.adjustTitleFontSize()
   }
 
   ngOnDestroy() {
@@ -91,11 +107,11 @@ export class CountdownComponent implements OnInit, OnDestroy {
     }, this.UPDATE_INTERVAL)
   }
 
-  setLocalStorageItem(key: LocalStorageKey, title: string) {
+  setLocalStorageItem(key: string, title: string) {
     localStorage.setItem(key, title)
   }
 
-  getLocalStorageItem(key: LocalStorageKey) {
+  getLocalStorageItem(key: string) {
     return localStorage.getItem(key)
   }
 
@@ -103,7 +119,10 @@ export class CountdownComponent implements OnInit, OnDestroy {
     this.titleFormControl.valueChanges
       .pipe(debounceTime(this.UPDATE_LOCALSTORAGE), takeUntil(this.destroy$))
       .subscribe((value) => {
-        if (value) this.setLocalStorageItem('eventTitle', value)
+        if (value) {
+          this.setLocalStorageItem('eventTitle', value)
+          this.adjustTitleFontSize()
+        }
       })
   }
 
@@ -140,5 +159,9 @@ export class CountdownComponent implements OnInit, OnDestroy {
     const seconds = Math.floor((distance % (1000 * 60)) / 1000)
 
     return `${days} days, ${hours} h, ${minutes} m, ${seconds} s`
+  }
+
+  private adjustTitleFontSize() {
+    this.TextFittingAlgorithmService.adjustFontSizeToFit(this.eventBox)
   }
 }
