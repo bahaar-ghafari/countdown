@@ -23,7 +23,7 @@ $default-padding: 1rem;
   white-space: nowrap;
 
   // Solution one
-  font-size: calc(7px + 2vw);
+  // font-size: calc(7px + 2vw);
 
   .title {
     color: $primary-color;
@@ -36,6 +36,13 @@ $default-padding: 1rem;
     justify-content: space-between;
     margin-top: 1rem;
   }
+
+  .loading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
 }
 
 @media (min-width: 600px) {
@@ -43,8 +50,8 @@ $default-padding: 1rem;
     align-items: center;
     justify-content: center;
 
-      // Solution one
-    font-size: calc(9px + 3vw);
+    // Solution one
+    // font-size: calc(9px + 3vw);
 
     .input-group {
       flex-direction: row;

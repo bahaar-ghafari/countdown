@@ -1,16 +1,16 @@
+<div *ngIf="loading; else content">
+  <mat-spinner aria-label="Loading..."></mat-spinner>
+</div>
+<ng-template #content>
   <div class="container">
     <div>
       <h1 class="title" aria-label="Event Title">
         Time to {{ titleFormControl.value }}
       </h1>
-      <div *ngIf="loading; else content">
-        <mat-spinner aria-label="Loading..."></mat-spinner>
+
+      <div class="time" aria-live="polite" aria-atomic="true">
+        {{ timeRemaining }}
       </div>
-      <ng-template #content>
-        <div class="time" aria-live="polite" aria-atomic="true">
-          {{ timeRemaining }}
-        </div>
-      </ng-template>
     </div>
     <div class="input-group">
       <mat-form-field appearance="outline">
@@ -36,3 +36,4 @@
       </mat-form-field>
     </div>
   </div>
+</ng-template>
