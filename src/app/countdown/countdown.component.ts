@@ -71,14 +71,14 @@ export class CountdownComponent implements OnInit, OnDestroy, AfterViewInit {
 
   @HostListener('window:resize', ['$event'])
   onResize() {
-    this.adjustTitleFontSize()
+    this.adjustEventFontSize()
   }
 
   ngAfterViewInit() {
     setTimeout(() => {
-      this.adjustTitleFontSize()
-      this.isLoading = false
+      this.adjustEventFontSize()
     }, 1000)
+
   }
 
   ngOnDestroy() {
@@ -103,14 +103,16 @@ export class CountdownComponent implements OnInit, OnDestroy, AfterViewInit {
     this.handleDateChange()
   }
 
-  private startCountDownTimer() {
+  public startCountDownTimer() {
     setInterval(() => {
       const date = this.dateFormControl.value
 
       if (date) {
         this.timeRemaining = getTimeRemaining(date)
       }
-      this.isLoading = false
+      if (this.isLoading) {
+        this.isLoading = false
+      }
     }, this.UPDATE_INTERVAL)
   }
 
@@ -120,7 +122,7 @@ export class CountdownComponent implements OnInit, OnDestroy, AfterViewInit {
       .subscribe((value) => {
         if (value) {
           setLocalStorageItem('eventTitle', value)
-          this.adjustTitleFontSize()
+          this.TextFittingAlgorithmService.adjustFontSizeToFit(this.titleRef)
         }
       })
   }
@@ -131,7 +133,6 @@ export class CountdownComponent implements OnInit, OnDestroy, AfterViewInit {
       .subscribe((value) => {
         if (value) {
           setLocalStorageItem('eventDate', value.toISOString())
-
           getTimeRemaining(value)
         }
       })
@@ -141,7 +142,7 @@ export class CountdownComponent implements OnInit, OnDestroy, AfterViewInit {
     this.datepicker.open()
   }
 
-  private adjustTitleFontSize() {
+  private adjustEventFontSize() {
     this.TextFittingAlgorithmService.adjustFontSizeToFit(this.titleRef)
     this.TextFittingAlgorithmService.adjustFontSizeToFit(this.timeRef)
   }

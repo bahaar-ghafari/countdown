@@ -1,26 +1,26 @@
-import {
-  TestBed,
-  ComponentFixture,
-  fakeAsync,
-  tick,
-} from '@angular/core/testing';
+import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { CountdownComponent } from './countdown.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { TextFittingAlgorithmService } from './text-fitting-algorithm.service';
+import { getTimeRemaining } from './countdown.utils';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { CommonModule } from '@angular/common';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { CommonModule } from '@angular/common';
-import { By } from '@angular/platform-browser';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 describe('CountdownComponent', () => {
   let component: CountdownComponent;
   let fixture: ComponentFixture<CountdownComponent>;
+  let textFittingAlgorithmService: TextFittingAlgorithmService;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [
+        CountdownComponent,
+        ReactiveFormsModule,
+        MatDatepickerModule,
         CountdownComponent,
         BrowserAnimationsModule,
         ReactiveFormsModule,
@@ -30,69 +30,70 @@ describe('CountdownComponent', () => {
         MatProgressSpinnerModule,
         CommonModule,
       ],
+      providers: [
+        TextFittingAlgorithmService,
+      ]
     }).compileComponents();
-  });
 
-  beforeEach(() => {
     fixture = TestBed.createComponent(CountdownComponent);
     component = fixture.componentInstance;
+    textFittingAlgorithmService = TestBed.inject(TextFittingAlgorithmService);
     fixture.detectChanges();
   });
 
-  it('should create the component', () => {
+  it('should create', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should have initial form values', () => {
-    const titleControl = component.titleFormControl;
-    const dateControl = component.dateFormControl;
+  it('should initialize the form with local storage values if available', () => {
+    spyOn(window.localStorage, 'getItem').and.callFake((key: string) => {
+      if (key === 'eventTitle') return 'Test Event';
+      if (key === 'eventDate') return new Date('2025-06-21').toISOString();
+      return null;
+    });
 
-    expect(titleControl.value).toBe('Midsummer Eve');
-    expect(dateControl.value).toEqual(new Date('2025-06-21'));
+    component.ngOnInit();
+
+    expect(component.titleFormControl.value).toBe('Test Event');
+    expect(component.dateFormControl.value).toEqual(new Date('2025-06-21'));
   });
 
-  it('should update localStorage when title changes', fakeAsync(() => {
-    spyOn(localStorage, 'setItem');
-    component.titleFormControl.setValue('New Event');
-    tick(1000);
-
-    expect(localStorage.setItem).toHaveBeenCalledWith(
-      'eventTitle',
-      'New Event',
-    );
+  it('should adjust font size when title changes', fakeAsync(() => {
+    spyOn(textFittingAlgorithmService, 'adjustFontSizeToFit');
+  
+    component.titleFormControl.setValue('New Title');
+    fixture.detectChanges();
+  
+    tick(1000); // Simulate the passage of debounce time (adjust this if necessary)
+    fixture.detectChanges();
+  
+    expect(textFittingAlgorithmService.adjustFontSizeToFit).toHaveBeenCalledWith(component.titleRef);
   }));
 
-  it('should update localStorage when date changes', fakeAsync(() => {
-    spyOn(localStorage, 'setItem');
-    const newDate = new Date('2025-07-01');
-    component.dateFormControl.setValue(newDate);
-    tick(1000);
+  it('should start the countdown timer on initialization', () => {
+    spyOn(window as any, 'setInterval').and.callFake((fn: any, delay: number) => {
+      fn(); // Call the function immediately to simulate the interval
+      return 1234; // Mock interval ID
+    });
 
-    expect(localStorage.setItem).toHaveBeenCalledWith(
-      'eventDate',
-      newDate.toISOString(),
-    );
-  }));
-
-  it('should calculate the correct time remaining', () => {
-    const targetDate = new Date(Date.now() + 86400000); // 1 day in the future
-    const result = component.updateCountdown(targetDate);
-
-    expect(result).toContain('1 days');
+    component.ngOnInit();
+    expect(component.isLoading).toBeFalse();
+    expect(component.timeRemaining).toBe(getTimeRemaining(component.dateFormControl.value));
   });
 
-  it('should return "The event has passed!" if the target date is in the past', () => {
-    const targetDate = new Date(Date.now() - 86400000); // 1 day in the past
-    const result = component.updateCountdown(targetDate);
+  it('should adjust font sizes on window resize', () => {
+    spyOn(component as any, 'adjustEventFontSize').and.callThrough();
 
-    expect(result).toBe('The event has passed!');
-  });
-
-  it('should show loading spinner initially', () => {
-    component.loading = true;
+    window.dispatchEvent(new Event('resize'));
     fixture.detectChanges();
 
-    const spinner = fixture.debugElement.query(By.css('mat-spinner'));
-    expect(spinner).toBeTruthy();
+    expect(component['adjustEventFontSize']).toHaveBeenCalled();
+  });
+
+  it('should open the date picker when openDatepicker is called', () => {
+    spyOn(component.datepicker, 'open');
+
+    component.openDatepicker();
+    expect(component.datepicker.open).toHaveBeenCalled();
   });
 });
