@@ -14,7 +14,11 @@ import {
 } from '@angular/material/datepicker'
 import { Subject } from 'rxjs'
 import { debounceTime, takeUntil } from 'rxjs/operators'
+
 import { TextFittingAlgorithmService } from './text-fitting-algorithm.service'
+import { getLocalStorageItem, setLocalStorageItem } from '../app.utils'
+import { getTimeRemaining } from './countdown.utils'
+
 import { CommonModule } from '@angular/common'
 import { MatFormFieldModule } from '@angular/material/form-field'
 import { MatInputModule } from '@angular/material/input'
@@ -83,14 +87,14 @@ export class CountdownComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private initializeForm() {
-    const eventTitle = this.getLocalStorageItem('eventTitle')
-    const eventDate = this.getLocalStorageItem('eventDate')
+    const eventTitle = getLocalStorageItem('eventTitle')
+    const eventDate = getLocalStorageItem('eventDate')
 
     if (eventTitle && eventDate) {
       this.titleFormControl.setValue(eventTitle)
       this.dateFormControl.setValue(new Date(eventDate))
 
-      this.updateCountdown(this.dateFormControl.value)
+      getTimeRemaining(this.dateFormControl.value)
     }
   }
 
@@ -104,18 +108,10 @@ export class CountdownComponent implements OnInit, OnDestroy, AfterViewInit {
       const date = this.dateFormControl.value
 
       if (date) {
-        this.timeRemaining = this.updateCountdown(date)
+        this.timeRemaining = getTimeRemaining(date)
       }
       this.isLoading = false
     }, this.UPDATE_INTERVAL)
-  }
-
-  setLocalStorageItem(key: string, title: string) {
-    localStorage.setItem(key, title)
-  }
-
-  getLocalStorageItem(key: string) {
-    return localStorage.getItem(key)
   }
 
   handleTitleChange() {
@@ -123,7 +119,7 @@ export class CountdownComponent implements OnInit, OnDestroy, AfterViewInit {
       .pipe(debounceTime(this.UPDATE_LOCALSTORAGE), takeUntil(this.destroy$))
       .subscribe((value) => {
         if (value) {
-          this.setLocalStorageItem('eventTitle', value)
+          setLocalStorageItem('eventTitle', value)
           this.adjustTitleFontSize()
         }
       })
@@ -134,38 +130,15 @@ export class CountdownComponent implements OnInit, OnDestroy, AfterViewInit {
       .pipe(debounceTime(this.UPDATE_LOCALSTORAGE), takeUntil(this.destroy$))
       .subscribe((value) => {
         if (value) {
-          this.setLocalStorageItem('eventDate', value.toISOString())
+          setLocalStorageItem('eventDate', value.toISOString())
 
-          this.updateCountdown(value)
+          getTimeRemaining(value)
         }
       })
   }
 
   openDatepicker() {
     this.datepicker.open()
-  }
-
-  updateCountdown(targetDate: Date | null): string {
-    if (!targetDate) return ''
-    const now = new Date().getTime()
-    const distance = targetDate.getTime() - now
-
-    if (distance < 0) {
-      return 'The event has passed!'
-    }
-
-    const days = Math.floor(distance / (1000 * 60 * 60 * 24))
-    const hours = Math.floor(
-      (distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60),
-    )
-    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60))
-    const seconds = Math.floor((distance % (1000 * 60)) / 1000)
-
-    return `${this.padWithZeros(days, 3)} days, ${this.padWithZeros(hours, 2)} h, ${this.padWithZeros(minutes, 2)} m, ${this.padWithZeros(seconds, 2)} s`
-  }
-
-  private padWithZeros(number: number, length: number): string {
-    return number.toString().padStart(length, '0')
   }
 
   private adjustTitleFontSize() {
