@@ -25,7 +25,8 @@ $default-padding: 1rem;
   text-overflow: ellipsis;
   white-space: nowrap;
   .event-box {
-    height: 50%;
+    height: 65vh;
+    align-content: center;
   }
   .title {
     color: $primary-color;
@@ -33,14 +34,23 @@ $default-padding: 1rem;
   }
   .title,
   .time {
+    place-content: center;
     flex: 0 0 auto;
-    min-height: 50%;
     margin: 0;
   }
   .input-group {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    input{
+      font-size: 2rem;
+    }
+    mat-label{
+      font-size: 1.5rem;
+    }
+    mat-form-field{
+      min-width: 20%;
+    }
   }
 
   .loading {
