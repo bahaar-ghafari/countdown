@@ -12,7 +12,7 @@ $default-padding: 1rem;
   padding: $default-padding;
   box-sizing: border-box;
 }
-.de-active{
+.de-active {
   opacity: 0.1;
   background-color: rgba(255, 255, 255, 0.2);
 }
@@ -25,22 +25,23 @@ $default-padding: 1rem;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-
-
-
-  // Solution one
-  // font-size: calc(7px + 2vw);
-
+  .event-box {
+    height: 50%;
+  }
   .title {
     color: $primary-color;
     font-weight: 800;
   }
-
+  .title,
+  .time {
+    flex: 0 0 auto;
+    min-height: 50%;
+    margin: 0;
+  }
   .input-group {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    margin-top: 1rem;
   }
 
   .loading {
