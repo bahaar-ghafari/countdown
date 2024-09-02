@@ -1,39 +1,36 @@
 <div class="container">
-  <!-- <div *ngIf="loading; else content" class="loading">
+  <div *ngIf="loading" class="loading">
     <mat-spinner aria-label="Loading..."></mat-spinner>
-  </div> -->
-  <!-- <ng-template #content> -->
-    <div #eventBox>
-      <h1 class="title" aria-label="Event Title">
-        Time to {{ titleFormControl.value }}
-      </h1>
-
-      <div class="time" aria-live="polite" aria-atomic="true">
-        {{ timeRemaining }}
-      </div>
+  </div>
+  <div>
+    <h1 class="title" aria-label="Event Title" #titleRef>
+      Time to {{ titleFormControl.value }}
+    </h1>
+    <div class="time" aria-live="polite" aria-atomic="true" #timeRef>
+      {{ timeRemaining }}
     </div>
-    <div class="input-group">
-      <mat-form-field appearance="outline">
-        <mat-label>Title</mat-label>
-        <input
-          matInput
-          placeholder="Title"
-          [formControl]="titleFormControl"
-          aria-label="Event Title"
-        />
-      </mat-form-field>
+  </div>
+  <div class="input-group">
+    <mat-form-field appearance="outline">
+      <mat-label>Title</mat-label>
+      <input
+        matInput
+        placeholder="Title"
+        [formControl]="titleFormControl"
+        aria-label="Event Title"
+      />
+    </mat-form-field>
 
-      <mat-form-field appearance="outline">
-        <mat-label>Date</mat-label>
-        <input
-          matInput
-          [matDatepicker]="datepicker"
-          [formControl]="dateFormControl"
-          (click)="openDatepicker()"
-          aria-label="Event Date"
-        />
-        <mat-datepicker #datepicker></mat-datepicker>
-      </mat-form-field>
-    </div>
-  <!-- </ng-template> -->
+    <mat-form-field appearance="outline">
+      <mat-label>Date</mat-label>
+      <input
+        matInput
+        [matDatepicker]="datepicker"
+        [formControl]="dateFormControl"
+        (click)="openDatepicker()"
+        aria-label="Event Date"
+      />
+      <mat-datepicker #datepicker></mat-datepicker>
+    </mat-form-field>
+  </div>
 </div>

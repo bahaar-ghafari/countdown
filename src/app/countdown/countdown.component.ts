@@ -46,20 +46,20 @@ export class CountdownComponent implements OnInit, OnDestroy, AfterViewInit {
   targetDate: Date = new Date(this.MIDSUMMER_ENV_DATE)
   timeRemaining = ''
 
-  loading = false
+  loading = true
 
   titleFormControl = new FormControl<string>('Midsummer Eve')
   dateFormControl = new FormControl<Date>(this.targetDate)
 
   @ViewChild('datepicker') datepicker!: MatDatepicker<Date>
-  @ViewChild('eventBox', { static: true }) eventBox!: ElementRef
+  @ViewChild('titleRef', { static: true }) titleRef!: ElementRef
+  @ViewChild('timeRef', { static: true }) timeRef!: ElementRef
 
   constructor(
     private TextFittingAlgorithmService: TextFittingAlgorithmService,
   ) {}
 
   ngOnInit() {
-    this.loading = true
     this.initializeForm()
     this.subscribeToFormChange()
     this.startCountDownTimer()
@@ -71,7 +71,10 @@ export class CountdownComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this.adjustTitleFontSize()
+    setTimeout(() => {
+      this.adjustTitleFontSize()
+      this.loading = false
+    }, 1000)
   }
 
   ngOnDestroy() {
@@ -162,6 +165,8 @@ export class CountdownComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private adjustTitleFontSize() {
-    this.TextFittingAlgorithmService.adjustFontSizeToFit(this.eventBox)
+      this.TextFittingAlgorithmService.adjustFontSizeToFit(this.titleRef)
+      this.TextFittingAlgorithmService.adjustFontSizeToFit(this.timeRef)
+
   }
 }
