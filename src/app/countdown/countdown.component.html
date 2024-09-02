@@ -1,5 +1,5 @@
-<div class="container">
-  <div *ngIf="loading" class="loading">
+<div class="container" [class.de-active]="isLoading">
+  <div *ngIf="isLoading" class="loading">
     <mat-spinner aria-label="Loading..."></mat-spinner>
   </div>
   <div>

@@ -46,7 +46,7 @@ export class CountdownComponent implements OnInit, OnDestroy, AfterViewInit {
   targetDate: Date = new Date(this.MIDSUMMER_ENV_DATE)
   timeRemaining = ''
 
-  loading = true
+  isLoading = true
 
   titleFormControl = new FormControl<string>('Midsummer Eve')
   dateFormControl = new FormControl<Date>(this.targetDate)
@@ -73,7 +73,7 @@ export class CountdownComponent implements OnInit, OnDestroy, AfterViewInit {
   ngAfterViewInit() {
     setTimeout(() => {
       this.adjustTitleFontSize()
-      this.loading = false
+      this.isLoading = false
     }, 1000)
   }
 
@@ -106,7 +106,7 @@ export class CountdownComponent implements OnInit, OnDestroy, AfterViewInit {
       if (date) {
         this.timeRemaining = this.updateCountdown(date)
       }
-      this.loading = false
+      this.isLoading = false
     }, this.UPDATE_INTERVAL)
   }
 
@@ -161,12 +161,15 @@ export class CountdownComponent implements OnInit, OnDestroy, AfterViewInit {
     const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60))
     const seconds = Math.floor((distance % (1000 * 60)) / 1000)
 
-    return `${days} days, ${hours} h, ${minutes} m, ${seconds} s`
+    return `${this.padWithZeros(days, 3)} days, ${this.padWithZeros(hours, 2)} h, ${this.padWithZeros(minutes, 2)} m, ${this.padWithZeros(seconds, 2)} s`
+  }
+
+  private padWithZeros(number: number, length: number): string {
+    return number.toString().padStart(length, '0')
   }
 
   private adjustTitleFontSize() {
-      this.TextFittingAlgorithmService.adjustFontSizeToFit(this.titleRef)
-      this.TextFittingAlgorithmService.adjustFontSizeToFit(this.timeRef)
-
+    this.TextFittingAlgorithmService.adjustFontSizeToFit(this.titleRef)
+    this.TextFittingAlgorithmService.adjustFontSizeToFit(this.timeRef)
   }
 }
