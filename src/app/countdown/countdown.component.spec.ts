@@ -64,16 +64,16 @@ describe('CountdownComponent', () => {
     component.titleFormControl.setValue('New Title');
     fixture.detectChanges();
   
-    tick(1000); // Simulate the passage of debounce time (adjust this if necessary)
+    tick(1000);
     fixture.detectChanges();
   
     expect(textFittingAlgorithmService.adjustFontSizeToFit).toHaveBeenCalledWith(component.titleRef);
   }));
 
   it('should start the countdown timer on initialization', () => {
-    spyOn(window as any, 'setInterval').and.callFake((fn: any, delay: number) => {
-      fn(); // Call the function immediately to simulate the interval
-      return 1234; // Mock interval ID
+    spyOn(window as any, 'setInterval').and.callFake((fn: any) => {
+      fn(); 
+      return 1234; 
     });
 
     component.ngOnInit();

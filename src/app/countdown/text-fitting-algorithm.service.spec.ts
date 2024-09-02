@@ -16,9 +16,8 @@ describe('TextFittingAlgorithmService', () => {
 
   it('should adjust font size to fit within the container', () => {
     const elementRefMock = createElementRefMock('Test Content');
-    const containerRefMock = createElementRefMock('', 500); // Mock container width as 500px
+    const containerRefMock = createElementRefMock('', 500); 
 
-    // Since we cannot spy on private methods, we will rely on the public method's behavior
     service.adjustFontSizeToFit(elementRefMock, containerRefMock);
 
     const appliedFontSize = parseFloat(elementRefMock.nativeElement.style.fontSize);
@@ -28,7 +27,7 @@ describe('TextFittingAlgorithmService', () => {
   it('should fallback to window width if no container is provided', () => {
     const elementRefMock = createElementRefMock('Test Content');
 
-    spyOnProperty(window, 'innerWidth').and.returnValue(800); // Mock the window width as 800px
+    spyOnProperty(window, 'innerWidth').and.returnValue(800); 
 
     service.adjustFontSizeToFit(elementRefMock);
 
@@ -39,7 +38,6 @@ describe('TextFittingAlgorithmService', () => {
   it('should calculate text width using canvas indirectly through public method', () => {
     const elementRefMock = createElementRefMock('Test Content');
 
-    // Call the public method that uses getTextWidth internally
     service.adjustFontSizeToFit(elementRefMock);
 
     const appliedFontSize = parseFloat(elementRefMock.nativeElement.style.fontSize);
@@ -48,7 +46,7 @@ describe('TextFittingAlgorithmService', () => {
 });
 
 function createElementRefMock(textContent: string, width: number = 1000): ElementRef {
-    const element = document.createElement('div'); // Create a real DOM element
+    const element = document.createElement('div'); 
     element.innerText = textContent;
     element.style.width = `${width}px`;
     
