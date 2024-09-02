@@ -8,6 +8,7 @@ Countdown is a responsive and interactive Angular application that allows users 
 + [Demo](#demo)
 + [Installation](#installation)
 + [Usage](#usage)
++ [Text Fitting Algorithm](#algorithm)
 + [Improvement](#improvement)
 + [Debounce And Local Storage](#Debounce-and-Local-Storage)
 + [Testing](#testing)
@@ -73,6 +74,26 @@ Setting Up an Event
 **2. Pick a Date:** Select a future date using the date picker.
 
 **3. View Countdown:** The application will automatically display a live countdown to the selected date.
+
+## Algorithm
+
+**Text Fitting Algorithm:** This algorithm compares to **using font-size with vw units**, which is simple but inflexible for dynamic content, and a **binary search** approach, which offers precise fitting with 𝑂(log𝑛) time complexity and adds implementation complexity. My algorithm, with a linear 
+**𝑂(𝑛)** time complexity, provides a practical balance, offering less computational overhead than binary search and more adaptability than the vw method, making it well-suited for responsive designs.
+
+**How It Works**
+**1. Initial Setup:** The text starts with a default font size (5 rem).
+
+**2. Measure Text Width:** Calculates the text width using the canvas API, based on the computed styles of the text element.
+
+**3. Adjust Font Size:** It calculates the required font size using the **ratio of the container width to the text width**, then applies a reduction factor (0.95) to ensure the text fits comfortably within the container.
+Apply Font Size:
+
+The final adjusted font size is applied to the text element.
+
+**Example Usage:**
+````bash
+this.textFittingAlgorithmService.adjustFontSizeToFit(this.titleRef);
+````
 
 ## Improvement
 - **Multi-Language Support with Dictionary:** Implement a dictionary feature that allows the application to support multiple languages. Users can choose their preferred language, and the UI text will be dynamically translated.
