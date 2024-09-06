@@ -12,8 +12,9 @@ $default-padding: 1rem;
   box-sizing: border-box;
 }
 .de-active {
-  opacity: 0.1;
-  background-color: rgba(255, 255, 255, 0.2);
+  div:not(:nth-child(1)) {
+    display: none;
+  }
 }
 .container {
   width: 100%;
