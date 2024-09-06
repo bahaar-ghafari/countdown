@@ -40,12 +40,13 @@ import { provideNativeDateAdapter } from '@angular/material/core'
   ],
   providers: [provideNativeDateAdapter()],
 })
-export class CountdownComponent implements OnInit, OnDestroy, AfterViewInit {
+export class CountdownComponent implements OnInit, OnDestroy {
   private readonly MIDSUMMER_ENV_DATE = '2025-06-21'
   private readonly UPDATE_LOCALSTORAGE = 1000
   private readonly UPDATE_INTERVAL = 1000
 
   private destroy$ = new Subject<void>()
+  private timerInterval?: ReturnType<typeof setInterval>
 
   targetDate: Date = new Date(this.MIDSUMMER_ENV_DATE)
   timeRemaining = ''
@@ -74,23 +75,22 @@ export class CountdownComponent implements OnInit, OnDestroy, AfterViewInit {
     this.adjustEventFontSize()
   }
 
-  ngAfterViewInit() {
-    setTimeout(() => {
+  ngAfterViewChecked() {
       this.adjustEventFontSize()
-    }, 1000)
-
   }
 
   ngOnDestroy() {
     this.destroy$.next()
     this.destroy$.complete()
+
+    if (this.timerInterval) clearInterval(this.timerInterval)
   }
 
   private initializeForm() {
     const eventTitle = getLocalStorageItem('eventTitle')
     const eventDate = getLocalStorageItem('eventDate')
 
-    if (eventTitle && eventDate) {
+    if (eventTitle && eventDate && !isNaN(Date.parse(eventDate))) {
       this.titleFormControl.setValue(eventTitle)
       this.dateFormControl.setValue(new Date(eventDate))
 
@@ -104,7 +104,7 @@ export class CountdownComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   public startCountDownTimer() {
-    setInterval(() => {
+    this.timerInterval = setInterval(() => {
       const date = this.dateFormControl.value
 
       if (date) {
